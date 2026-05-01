@@ -19,7 +19,7 @@ function renderSensorPopup(sensor) {
 function crearMarkerSensor(sensor) {
   const marker = L.marker([sensor.lat, sensor.lng]).addTo(map);
   marker.sensorData = sensor;
-  marker.bindPopup(renderSensorPopup(sensor));  // Sin parámetro mode
+  marker.bindPopup(renderSensorPopup(sensor)); // Sin parámetro mode
 
   marker.on("click", function () {
     actualitzarGrafica(this.sensorData);
@@ -28,7 +28,17 @@ function crearMarkerSensor(sensor) {
   marker.on("popupopen", function () {
     const btn = this.getPopup().getElement().querySelector(".collect-btn");
     if (btn) {
-      btn.onclick = () => recollirLectures(this.sensorData);
+      const originalText = btn.innerText;
+      btn.onclick = async () => {
+        btn.innerText = "Carregant...";
+        btn.disabled = true;
+        try {
+          await recollirLectures(this.sensorData);
+        } finally {
+          btn.innerText = originalText;
+          btn.disabled = false;
+        }
+      };
     }
   });
 
@@ -36,17 +46,18 @@ function crearMarkerSensor(sensor) {
 }
 
 function existeixSensorAProp(lat, lng, tolerancia = 0.0005) {
-  return sensors.some(sensor =>
-    Math.abs(sensor.lat - lat) < tolerancia &&
-    Math.abs(sensor.lng - lng) < tolerancia
+  return sensors.some(
+    (sensor) =>
+      Math.abs(sensor.lat - lat) < tolerancia &&
+      Math.abs(sensor.lng - lng) < tolerancia,
   );
 }
 
 function actualitzarGrafica(sensor) {
-  const labels = sensor.readings.map(r => r.time);
-  const temps = sensor.readings.map(r => r.temps);
-  const hums = sensor.readings.map(r => r.hums);
-  const press = sensor.readings.map(r => r.press);
+  const labels = sensor.readings.map((r) => r.time);
+  const temps = sensor.readings.map((r) => r.temps);
+  const hums = sensor.readings.map((r) => r.hums);
+  const press = sensor.readings.map((r) => r.press);
 
   if (chart) chart.destroy();
 
@@ -59,9 +70,9 @@ function actualitzarGrafica(sensor) {
       datasets: [
         { label: "Temperatura", data: temps },
         { label: "Humitat", data: hums },
-        { label: "Pressió", data: press }
-      ]
-    }
+        { label: "Pressió", data: press },
+      ],
+    },
   });
 
   actualitzarTaula(sensor);
@@ -71,12 +82,12 @@ function actualitzarTaula(sensor) {
   const tbody = document.querySelector("#sensor-table tbody");
   tbody.innerHTML = "";
 
-  sensor.readings.forEach(r => {
+  sensor.readings.forEach((r) => {
     const row = document.createElement("tr");
 
-    const tempClass = (r.temps < 15 || r.temps > 30) ? "text-danger" : "";
-    const humClass = (r.hums < 40 || r.hums > 70) ? "text-danger" : "";
-    const pressClass = (r.press < 980 || r.press > 1030) ? "text-danger" : "";
+    const tempClass = r.temps < 15 || r.temps > 30 ? "text-danger" : "";
+    const humClass = r.hums < 40 || r.hums > 70 ? "text-danger" : "";
+    const pressClass = r.press < 980 || r.press > 1030 ? "text-danger" : "";
 
     row.innerHTML = `
       <td>${r.time}</td>
@@ -89,16 +100,29 @@ function actualitzarTaula(sensor) {
   });
 }
 
-function recollirLectures(sensor) {
-  const novaLectura = {
-    time: new Date().toLocaleTimeString().slice(0, 5),
-    temps: generarRandom(10, 40),
-    hums: generarRandom(30, 80),
-    press: generarRandom(970, 1040)
-  };
+async function recollirLectures(sensor) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${sensor.lat}&longitude=${sensor.lng}&current=temperature_2m,relative_humidity_2m,surface_pressure`;
+  try {
+    const response = await fetch(url);
 
-  sensor.readings.push(novaLectura);
-  actualitzarGrafica(sensor);
+    const data = await response.json();
+
+    const current = data.current;
+
+    const novaLectura = {
+      time: new Date().toLocaleTimeString().slice(0, 5),
+      temps: current.temperature_2m,
+      hums: current.relative_humidity_2m,
+      press: current.surface_pressure,
+    };
+
+    sensor.readings.push(novaLectura);
+
+    actualitzarGrafica(sensor);
+  } catch (error) {
+    console.error("Error obtenint dades:", error);
+    alert("No s'han pogut obtenir dades meteorològiques");
+  }
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -136,8 +160,8 @@ document.addEventListener("DOMContentLoaded", function () {
       readings: [
         { time: "10:00", temps: 22, hums: 60, press: 1012 },
         { time: "11:00", temps: 28, hums: 40, press: 1005 },
-        { time: "12:00", temps: 35, hums: 30, press: 995 }
-      ]
+        { time: "12:00", temps: 35, hums: 30, press: 995 },
+      ],
     },
   ];
 
@@ -183,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function () {
           name: name,
           lat: lat,
           lng: lng,
-          readings: []
+          readings: [],
         };
 
         sensors.push(newSensor);
