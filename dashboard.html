@@ -29,7 +29,7 @@
     <div class="container">
         <div class="row">
 
-            <div id= "map-section" class="col-12">
+            <div id="map-section" class="col-12 col-lg-8">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Mapa de sensors</h5>
@@ -38,7 +38,27 @@
                 </div>
             </div>
 
-            <div id="admin-section" class="row">
+            <div class="col-12 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Lectures del sensor</h5>
+                        <canvas id="chart"></canvas>
+                    </div>
+                </div>
+            <table class="table mt-3" id="sensor-table">
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Temperatura</th>
+                        <th>Humitat</th>
+                        <th>Pressió</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            </div>
+
+            <div id="admin-section" class="row mt-4">
                 <div class="col-12">
                     <div class="card d-none" id="admin-panel">
                         <div class="card-body">
@@ -58,6 +78,7 @@
         </footer>
     </div>
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/dashboard.js"></script>
 </body>
 
