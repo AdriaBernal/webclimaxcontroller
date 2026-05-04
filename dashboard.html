@@ -18,11 +18,10 @@
             <span class="fs-4">ClimaX Controller</span>
         </a>
         <ul class="nav nav-pills">
-            <li class="nav-item"><a href="index.html" class="nav-link" aria-current="page">Inici</a></li>
-            <li class="nav-item"><a href="documentation.html" class="nav-link" aria-current="page">Documentació</a></li>
-            <li class="nav-item" id="dashboard-link"><a href="dashboard.html" class="nav-link active"
-                    aria-current="page">Dashboard</a></li>
-            <li class="nav-item"><a href="login.html" class="nav-link" aria-current="page">Inicia Sessió</a></li>
+            <li class="nav-item"><a href="index.html" class="nav-link">Inici</a></li>
+            <li class="nav-item"><a href="documentation.html" class="nav-link">Documentació</a></li>
+            <li class="nav-item"><a href="dashboard.html" class="nav-link active">Dashboard</a></li>
+            <li class="nav-item"><a href="login.html" class="nav-link">Inicia Sessió</a></li>
         </ul>
     </header>
 
@@ -33,7 +32,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Mapa de sensors</h5>
-                        <div id="map" style="height: 400px; background-color: #e9ecef;"></div>
+                        <div id="map" style="height: 400px;"></div>
                     </div>
                 </div>
             </div>
@@ -41,42 +40,47 @@
             <div class="col-12 col-lg-4">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Lectures del sensor</h5>
+                        <h5 class="card-title" id="chart-title">Lectures del sensor</h5>
                         <canvas id="chart"></canvas>
                     </div>
                 </div>
-            <table class="table mt-3" id="sensor-table">
-                <thead>
-                    <tr>
-                        <th>Hora</th>
-                        <th>Temperatura</th>
-                        <th>Humitat</th>
-                        <th>Pressió</th>
-                    </tr>
-                </thead>
-                <tbody></tbody>
-            </table>
+                <table class="table mt-3" id="sensor-table">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Temperatura</th>
+                            <th>Humitat</th>
+                            <th>Pressió</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
             </div>
 
             <div id="admin-section" class="row mt-4">
                 <div class="col-12">
-                    <div class="card d-none" id="admin-panel">
+                    <div class="card" id="admin-panel">
                         <div class="card-body">
-                            <h5 class="card-title">Gestió d'usuaris (Només administradors)</h5>
+                            <h5 class="card-title">Gestió d'usuaris</h5>
+                            <a href="manageusers.html" class="btn btn-primary">Gestionar usuaris</a>
                         </div>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 
     <div class="container">
         <footer class="py-3 my-4">
             <hr>
-            </hr>
             <p class="text-center text-body-secondary">© 2025-2026 ClimaX Controller</p>
         </footer>
     </div>
+
+    <!-- Contenidor de Toasts (notificacions) -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="js/dashboard.js"></script>

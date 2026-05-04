@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <script src="bootstrap/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <a href="dashboard.html"
+            class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <svg class="bi me-2" width="40" height="32" aria-hidden="true">
+                <use xlink:href="#bootstrap"></use>
+            </svg>
+            <span class="fs-4">ClimaX Controller</span>
+        </a>
+        <ul class="nav nav-pills">
+            <li class="nav-item"><a href="index.html" class="nav-link">Inici</a></li>
+            <li class="nav-item"><a href="documentation.html" class="nav-link">Documentació</a></li>
+            <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+            <li class="nav-item"><a href="login.html" class="nav-link">Inicia Sessió</a></li>
+        </ul>
+    </header>
+
+    <div class="container mb-5">
+        <h2 class="mb-4">Gestió d'usuaris</h2>
+
+        <div class="row g-4">
+
+            <!-- ── COLUMNA ESQUERRA: CREAR USUARI ── -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">Crear nou usuari</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="create-nom" class="form-label">Nom</label>
+                            <input type="text" class="form-control" id="create-nom" placeholder="Joan">
+                        </div>
+                        <div class="mb-3">
+                            <label for="create-cognom" class="form-label">Cognom</label>
+                            <input type="text" class="form-control" id="create-cognom" placeholder="García">
+                        </div>
+                        <div class="mb-3">
+                            <label for="create-usuari" class="form-label">Nom d'usuari</label>
+                            <input type="text" class="form-control" id="create-usuari" placeholder="jgarcia">
+                        </div>
+                        <div class="mb-3">
+                            <label for="create-password" class="form-label">Contrasenya</label>
+                            <input type="password" class="form-control" id="create-password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="create-rol" class="form-label">Rol</label>
+                            <select class="form-select" id="create-rol">
+                                <option value="Pagès">Pagès</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary w-100" id="create-btn">Crear usuari</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── COLUMNA DRETA: GESTIONAR USUARI EXISTENT ── -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h5 class="mb-0">Actualitzar / Eliminar usuari</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="select-usuari" class="form-label">Selecciona usuari</label>
+                            <select class="form-select" id="select-usuari">
+                                <option value="">-- Selecciona un usuari --</option>
+                            </select>
+                        </div>
+                        <div id="edit-fields" class="d-none">
+                            <div class="mb-3">
+                                <label for="edit-nom" class="form-label">Nom</label>
+                                <input type="text" class="form-control" id="edit-nom">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-cognom" class="form-label">Cognom</label>
+                                <input type="text" class="form-control" id="edit-cognom">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-usuari" class="form-label">Nom d'usuari</label>
+                                <input type="text" class="form-control" id="edit-usuari">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-password" class="form-label">Nova contrasenya
+                                    <small class="text-muted">(deixa en blanc per no canviar)</small>
+                                </label>
+                                <input type="password" class="form-control" id="edit-password" placeholder="••••••••">
+                            </div>
+                            <div class="mb-3">
+                                <label for="edit-rol" class="form-label">Rol</label>
+                                <select class="form-select" id="edit-rol">
+                                    <option value="Pagès">Pagès</option>
+                                    <option value="Admin">Admin</option>
+                                </select>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-warning flex-fill" id="update-btn">Actualitzar</button>
+                                <button class="btn btn-danger flex-fill" id="delete-btn">Eliminar</button>
+                            </div>
+                        </div>
+
+                        <!-- Missatge quan no hi ha usuari seleccionat -->
+                        <p class="text-muted" id="no-selection-msg">
+                            Selecciona un usuari per veure les seves dades.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ── MODAL DE CONFIRMACIÓ D'ELIMINACIÓ ── -->
+    <div class="modal fade" id="delete-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Confirmar eliminació</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Estàs segur que vols eliminar l'usuari
+                    <strong id="modal-username"></strong>?
+                    <br>
+                    <span class="text-danger">Aquesta acció no es pot desfer.</span>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel·lar</button>
+                    <button type="button" class="btn btn-danger" id="confirm-delete-btn">Eliminar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-start mb-3 ms-5">
+        <a href="dashboard.html" class="text-decoration-none">
+            ← Tornar a dashboard
+        </a>
+    </div>
+
+    <!-- Contenidor de Toasts -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
+
+    <footer class="container py-3 mt-4">
+        <hr>
+        <p class="text-center text-body-secondary">© 2025-2026 ClimaX Controller</p>
+    </footer>
+
+    <script src="js/manageusers.js"></script>
+</body>
+
+</html>
