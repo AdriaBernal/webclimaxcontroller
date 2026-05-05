@@ -24,9 +24,317 @@
         </ul>
     </header>
 
-    <main class="form-signin text-center">
+    <!-- ── HERO ── -->
+    <div class="doc-header-hero py-5 mb-4">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="badge bg-success tech-badge mb-2">Documentació tècnica</span>
+                    <h1 class="display-5 fw-bold mb-3">Com funciona ClimaX Controller</h1>
+                    <p class="lead text-body-secondary mb-0">
+                        Una mirada per dins al sistema de gestió de sensors agrícoles: les tecnologies que l'impulsen,
+                        l'arquitectura que el sosté i les decisions de disseny que el fan fiable.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    </main>
+    <!-- ── CONTINGUT PRINCIPAL ── -->
+    <div class="container">
+        <div class="row g-5">
+
+            <!-- Columna principal: articles -->
+            <div class="col-md-8">
+
+                <!-- Article 1: Què és -->
+                <article class="doc-article" id="que-es">
+                    <h2>Què és ClimaX Controller?</h2>
+                    <p class="text-body-secondary mb-3">Sistema de monitoratge agrícola · 2025-2026</p>
+                    <p>
+                        ClimaX Controller és una plataforma web dissenyada per a la gestió i monitoratge de sensors
+                        climàtics en entorns agrícoles, especialment en vinyes. La seva funció principal és oferir
+                        als agricultors una visió en temps real de les condicions ambientals de les seves parcel·les:
+                        temperatura, humitat i pressió atmosfèrica, des de qualsevol dispositiu amb navegador web.
+                    </p>
+                    <p>
+                        El sistema permet registrar sensors geolocalitzats sobre un mapa interactiu, consultar
+                        l'històric de lectures de cada sensor i detectar automàticament valors fora del rang òptim
+                        per al cultiu. L'accés és per rols: els agricultors gestionen els seus propis sensors,
+                        mentre que els administradors gestionen el conjunt d'usuaris de la plataforma.
+                    </p>
+                    <div class="row g-3 mt-1">
+                        <div class="col-sm-4">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="fs-2 mb-1">🌡️</div>
+                                <div class="fw-semibold">Monitoratge</div>
+                                <div class="text-body-secondary small">Temperatura, humitat i pressió en temps real</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="fs-2 mb-1">🗺️</div>
+                                <div class="fw-semibold">Geolocalització</div>
+                                <div class="text-body-secondary small">Sensors ubicats sobre mapa interactiu</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="border rounded p-3 text-center h-100">
+                                <div class="fs-2 mb-1">👥</div>
+                                <div class="fw-semibold">Multiusuari</div>
+                                <div class="text-body-secondary small">Rols diferenciats per agricultors i admins</div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Article 2: Arquitectura -->
+                <article class="doc-article" id="arquitectura">
+                    <h2>Arquitectura del sistema</h2>
+                    <p class="text-body-secondary mb-3">Les tres capes que fan possible el sistema</p>
+                    <p>
+                        ClimaX segueix una arquitectura de tres capes, un patró estàndard en el
+                        desenvolupament d'aplicacions web modernes. Cada capa té una responsabilitat única
+                        i es comunica amb les altres a través d'interfícies ben definides.
+                    </p>
+
+                    <div class="arch-box mt-3 mb-4">NAVEGADOR (Frontend)
+HTML + CSS + JavaScript
+        │
+        │  HTTP / JSON  (API REST)
+        ▼
+SERVIDOR (Backend)
+FastAPI · Python
+        │
+        │  Consultes SQL
+        ▼
+BASE DE DADES
+MySQL</div>
+
+                    <h3>Frontend: el que veu l'usuari</h3>
+                    <p>
+                        La interfície d'usuari és completament estàtica: un conjunt de fitxers HTML, CSS i
+                        JavaScript que s'executen directament al navegador sense necessitar instal·lació.
+                        Tot el que ocorre visualment (mapa interactiu, gràfiques, taules de lectures,
+                        formularis de gestió) és lògica JavaScript que manipula el DOM en temps real.
+                    </p>
+
+                    <h3>Backend: el cervell de l'operació</h3>
+                    <p>
+                        El servidor és una API REST implementada amb FastAPI (Python). La seva funció és
+                        actuar de pont segur entre el navegador i la base de dades: rep peticions HTTP del
+                        frontend, valida credencials, aplica regles de negoci i retorna dades en format JSON.
+                        Cap dada sensible (contrasenyes, lògica d'autenticació) mai toca el navegador directament.
+                    </p>
+
+                    <h3>Base de dades: on viuen les dades</h3>
+                    <p>
+                        MySQL emmagatzema de forma persistent tota la informació del sistema: usuaris, sensors
+                        i lectures. L'esquema reflecteix les relacions del domini: un usuari pot tenir molts
+                        sensors, i cada sensor acumula moltes lectures al llarg del temps.
+                    </p>
+                </article>
+
+                <!-- Article 3: Tecnologies -->
+                <article class="doc-article" id="tecnologies">
+                    <h2>Tecnologies utilitzades</h2>
+                    <p class="text-body-secondary mb-3">Eines i llibreries que formen el projecte</p>
+
+                    <h3>Bootstrap 5</h3>
+                    <p>
+                        Bootstrap és el framework CSS que dona coherència visual a tota la interfície.
+                        Proporciona un sistema de graella de 12 columnes que fa la web adaptable a qualsevol
+                        mida de pantalla (responsive design), i un conjunt de components predefinits
+                        (botons, formularis, modals, alerts) que acceleren el desenvolupament sense sacrificar qualitat.
+                    </p>
+                    <div class="mb-3">
+                        <span class="badge bg-primary tech-badge me-1">Graella responsive</span>
+                        <span class="badge bg-primary tech-badge me-1">Components UI</span>
+                        <span class="badge bg-primary tech-badge">Toasts i Modals</span>
+                    </div>
+
+                    <h3>Leaflet.js</h3>
+                    <p>
+                        Leaflet és la llibreria de mapes interactius de codi obert més estesa del món.
+                        Permet renderitzar mapes de teseles (tiles) d'OpenStreetMap i afegir-hi marcadors,
+                        popups i events de clic de forma molt lleugera. En ClimaX, cada sensor es representa
+                        com un marcador geolocalitzat sobre el mapa, i al fer clic s'accedeix a les seves lectures.
+                    </p>
+                    <div class="mb-3">
+                        <span class="badge bg-success tech-badge me-1">Mapes interactius</span>
+                        <span class="badge bg-success tech-badge me-1">Geocodificació inversa</span>
+                        <span class="badge bg-success tech-badge">OpenStreetMap</span>
+                    </div>
+
+                    <h3>Chart.js</h3>
+                    <p>
+                        Chart.js és una llibreria JavaScript per a la visualització de dades mitjançant gràfiques.
+                        Permet crear gràfiques de línies, barres o circulars de forma declarativa, simplement
+                        proporcionant-li etiquetes i conjunts de dades. En el dashboard, s'utilitza per mostrar
+                        l'evolució temporal de temperatura, humitat i pressió de cada sensor seleccionat.
+                    </p>
+                    <div class="mb-3">
+                        <span class="badge bg-warning text-dark tech-badge me-1">Gràfiques de línies</span>
+                        <span class="badge bg-warning text-dark tech-badge">Visualització temporal</span>
+                    </div>
+
+                    <h3>FastAPI (Python)</h3>
+                    <p>
+                        FastAPI és un framework modern per a la construcció d'APIs REST en Python. Destaca per
+                        la seva velocitat (comparable a Node.js o Go), la generació automàtica de documentació
+                        interactiva (Swagger UI) i la validació automàtica de dades gràcies als tipus de Python.
+                        En ClimaX gestiona l'autenticació JWT, les operacions CRUD sobre usuaris i sensors,
+                        i la recepció i emmagatzematge de les lectures.
+                    </p>
+                    <div class="mb-3">
+                        <span class="badge bg-danger tech-badge me-1">API REST</span>
+                        <span class="badge bg-danger tech-badge me-1">Autenticació JWT</span>
+                        <span class="badge bg-danger tech-badge">Python</span>
+                    </div>
+
+                    <h3>MySQL</h3>
+                    <p>
+                        MySQL és el sistema de gestió de bases de dades relacionals triat per la seva robustesa,
+                        àmplia adopció i integració nativa amb Python via connectors com PyMySQL o SQLAlchemy.
+                        L'esquema del projecte conté tres taules principals: <code>usuari</code>, <code>sensor</code>
+                        i <code>lectura</code>, amb relacions de clau forana que garanteixen la integritat
+                        referencial de les dades.
+                    </p>
+                    <div class="mb-3">
+                        <span class="badge bg-secondary tech-badge me-1">Base de dades relacional</span>
+                        <span class="badge bg-secondary tech-badge me-1">Claus foranes</span>
+                        <span class="badge bg-secondary tech-badge">Persistent</span>
+                    </div>
+                </article>
+
+                <!-- Article 4: Seguretat -->
+                <article class="doc-article" id="seguretat">
+                    <h2>Seguretat i autenticació</h2>
+                    <p class="text-body-secondary mb-3">Com es protegeix l'accés al sistema</p>
+                    <p>
+                        El sistema d'autenticació de ClimaX es basa en tokens JWT (JSON Web Tokens).
+                        Quan un usuari inicia sessió correctament, el servidor genera un token signat
+                        digitalment que conté el seu identificador i rol. Aquest token es desa al
+                        navegador i s'envia automàticament en cada petició posterior al backend,
+                        que el verifica sense necessitat de consultar la base de dades en cada crida.
+                    </p>
+                    <p>
+                        Les contrasenyes mai es guarden en text pla a la base de dades: s'emmagatzemen
+                        com a hash criptogràfic. Això significa que ni els administradors del sistema
+                        poden recuperar la contrasenya original d'un usuari, únicament restablir-la.
+                    </p>
+                    <p>
+                        A nivell de frontend, el sistema de rols controla quines seccions del dashboard
+                        són visibles per a cada tipus d'usuari: els agricultors veuen el mapa i les seves
+                        dades, els administradors accedeixen al panel de gestió d'usuaris.
+                    </p>
+                </article>
+
+                <!-- Article 5: Flux de dades -->
+                <article class="doc-article" id="flux">
+                    <h2>Flux d'una lectura, de principi a fi</h2>
+                    <p class="text-body-secondary mb-3">Què passa quan recollim dades d'un sensor</p>
+                    <p>
+                        Per entendre com treballen les tres capes juntes, el millor exemple és seguir el
+                        camí d'una lectura meteorològica des que l'usuari prem un botó fins que queda
+                        desada a la base de dades.
+                    </p>
+                    <ol class="mt-3">
+                        <li class="mb-2">
+                            <strong>L'usuari prem "Recollir lectures"</strong> al popup d'un sensor al mapa.
+                            JavaScript captura l'event de clic.
+                        </li>
+                        <li class="mb-2">
+                            <strong>El frontend consulta Open-Meteo</strong>, una API meteorològica externa,
+                            amb les coordenades GPS del sensor. Rep temperatura, humitat i pressió actuals.
+                        </li>
+                        <li class="mb-2">
+                            <strong>JavaScript actualitza la interfície</strong> immediatament: redibuja la
+                            gràfica de Chart.js i afegeix una nova fila a la taula de lectures.
+                        </li>
+                        <li class="mb-2">
+                            <strong>El frontend fa un POST al backend</strong> (FastAPI) amb les dades
+                            de la lectura i el token JWT per autenticar la petició.
+                        </li>
+                        <li class="mb-2">
+                            <strong>FastAPI valida el token</strong>, comprova que el sensor pertany a
+                            l'usuari autenticat i executa un <code>INSERT</code> a la taula
+                            <code>lectura</code> de MySQL.
+                        </li>
+                        <li>
+                            <strong>Les dades queden persistides</strong>: la propera vegada que l'usuari
+                            o qualsevol altre obri el dashboard, les lectures seguiran hi sent accessibles.
+                        </li>
+                    </ol>
+                </article>
+
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="sidebar-sticky">
+
+                    <!-- Índex -->
+                    <div class="p-4 mb-3 bg-body-tertiary rounded">
+                        <h4 class="fst-italic mb-3">Continguts</h4>
+                        <nav>
+                            <a href="#que-es" class="toc-link">Què és ClimaX Controller?</a>
+                            <a href="#arquitectura" class="toc-link">Arquitectura del sistema</a>
+                            <a href="#tecnologies" class="toc-link">Tecnologies utilitzades</a>
+                            <a href="#seguretat" class="toc-link">Seguretat i autenticació</a>
+                            <a href="#flux" class="toc-link">Flux d'una lectura</a>
+                        </nav>
+                    </div>
+
+                    <!-- Stack tecnològic -->
+                    <div class="p-4 mb-3 border rounded">
+                        <h4 class="fst-italic mb-3">Stack tecnològic</h4>
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                                <tr>
+                                    <td class="text-body-secondary">Frontend</td>
+                                    <td>HTML · Bootstrap 5 · JS</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-body-secondary">Mapes</td>
+                                    <td>Leaflet.js</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-body-secondary">Gràfiques</td>
+                                    <td>Chart.js</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-body-secondary">Backend</td>
+                                    <td>FastAPI · Python</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-body-secondary">Base de dades</td>
+                                    <td>MySQL</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-body-secondary">Auth</td>
+                                    <td>JWT</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Accions ràpides -->
+                    <div class="p-4 bg-body-tertiary rounded">
+                        <h4 class="fst-italic mb-3">Prova el sistema</h4>
+                        <p class="text-body-secondary small mb-3">
+                            Accedeix al dashboard per explorar el mapa de sensors i les lectures en temps real.
+                        </p>
+                        <a href="login.html" class="btn btn-primary w-100 mb-2">Inicia sessió</a>
+                        <a href="index.html" class="btn btn-outline-secondary w-100">Tornar a inici</a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <div class="container">
         <footer class="py-3 my-4">
             <hr>
