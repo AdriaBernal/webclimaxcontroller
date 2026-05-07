@@ -11,16 +11,20 @@
 <body>
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <svg class="bi me-2" width="40" height="32" aria-hidden="true">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-            <span class="fs-4">ClimaX Controller</span>
+            <span class="fs-4"><img class="ms-3" src="../assets/brand/logo.png" alt="Logo" width="40" height="40" class="me-2">ClimaX Controller</span>
         </a>
         <ul class="nav nav-pills">
-            <li class="nav-item"><a href="index.html" class="nav-link" aria-current="page">Inici</a></li>
+            <li class="nav-item"><a href="index.html" class="nav-link">Inici</a></li>
             <li class="nav-item"><a href="documentation.html" class="nav-link">Documentació</a></li>
-            <li class="nav-item d-none" id="dashboard-link"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-            <li class="nav-item"><a href="login.html" class="nav-link active" aria-current="page">Inicia Sessió</a></li>
+            <li class="nav-item d-none" id="dashboard-link">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+            </li>
+            <li class="nav-item d-none" id="manage-users-link">
+                <a href="manageusers.html" class="nav-link">Gestió d'usuaris</a>
+            </li>
+            <li class="nav-item" id="nav-login-item">
+                <a href="login.html" class="nav-link active">Inicia Sessió</a>
+            </li>
         </ul>
     </header>
 
@@ -64,7 +68,8 @@
             <p class="text-center text-body-secondary">© 2025-2026 ClimaX Controller</p>
         </footer>
     </div>
-<script src="js/login.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/session.js"></script>
 </body>
 
 </html>

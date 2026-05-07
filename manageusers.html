@@ -12,16 +12,20 @@
     <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
         <a href="dashboard.html"
             class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
-            <svg class="bi me-2" width="40" height="32" aria-hidden="true">
-                <use xlink:href="#bootstrap"></use>
-            </svg>
-            <span class="fs-4">ClimaX Controller</span>
+            <span class="fs-4"><img class="ms-3" src="../assets/brand/logo.png" alt="Logo" width="40" height="40" class="me-2">ClimaX Controller</span>
         </a>
         <ul class="nav nav-pills">
             <li class="nav-item"><a href="index.html" class="nav-link">Inici</a></li>
             <li class="nav-item"><a href="documentation.html" class="nav-link">Documentació</a></li>
-            <li class="nav-item"><a href="dashboard.html" class="nav-link">Dashboard</a></li>
-            <li class="nav-item"><a href="login.html" class="nav-link">Inicia Sessió</a></li>
+            <li class="nav-item d-none" id="dashboard-link">
+                <a href="dashboard.html" class="nav-link">Dashboard</a>
+            </li>
+            <li class="nav-item" id="manage-users-link">
+                <a href="manageusers.html" class="nav-link active">Gestió d'usuaris</a>
+            </li>
+            <li class="nav-item" id="nav-login-item">
+                <a href="login.html" class="nav-link">Inicia Sessió</a>
+            </li>
         </ul>
     </header>
 
@@ -143,12 +147,6 @@
         </div>
     </div>
 
-    <div class="text-start mb-3 ms-5">
-        <a href="dashboard.html" class="text-decoration-none">
-            ← Tornar a dashboard
-        </a>
-    </div>
-
     <!-- Contenidor de Toasts -->
     <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toast-container"></div>
 
@@ -158,6 +156,7 @@
     </footer>
 
     <script src="js/manageusers.js"></script>
+    <script src="js/session.js"></script>
 </body>
 
 </html>

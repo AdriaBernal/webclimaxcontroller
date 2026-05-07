@@ -58,9 +58,9 @@ async function ferLogin(e) {
 
     // ── BLOC DE PROVA (eliminar quan hi hagi backend) ──
     const usuarisDeProva = [
-      { id: 1, nom: "Joan",   usuari: "jherrero",  password: "jherrero",    rol: "Admin" },
-      { id: 2, nom: "Carles", usuari: "puchi",      password: "independencia", rol: "Pagès" },
-      { id: 3, nom: "Oriol",  usuari: "ojunq",      password: "urnes",       rol: "Pagès" },
+      { id: 1, nom: "Joan Herrero",   usuari: "jherrero",  password: "jherrero",    rol: "Admin" },
+      { id: 2, nom: "Carles Moreno", usuari: "cmoreno",      password: "cmoreno", rol: "Pagès" },
+      { id: 3, nom: "Felipe Fernandez",  usuari: "ffernandez",      password: "ffernandez",       rol: "Pagès" },
     ];
 
     const trobat = usuarisDeProva.find(

@@ -1,4 +1,5 @@
-let chart;
+let chartMeteo;
+let chartPressure;
 let map;
 let sensors = [];
 
@@ -166,28 +167,81 @@ function actualitzarGrafica(sensor) {
     return;
   }
 
-  document.getElementById("chart-title").innerText = `Lectures: ${sensor.name}`;
+  const nom = sensor.name;
+  document.getElementById("chart-meteo-title").innerText    = `Temp. i Humitat – ${nom}`;
+  document.getElementById("chart-pressure-title").innerText = `Pressió – ${nom}`;
 
   const labels = sensor.readings.map((r) => r.time);
   const temps  = sensor.readings.map((r) => r.temps);
   const hums   = sensor.readings.map((r) => r.hums);
   const press  = sensor.readings.map((r) => r.press);
 
-  if (chart) chart.destroy();
+  // Destruïm les instàncies anteriors si existeixen
+  if (chartMeteo)    chartMeteo.destroy();
+  if (chartPressure) chartPressure.destroy();
 
-  const ctx = document.getElementById("chart").getContext("2d");
-  chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels,
-      datasets: [
-        { label: "Temperatura (°C)", data: temps, borderColor: "#dc3545", backgroundColor: "transparent", tension: 0.3 },
-        { label: "Humitat (%)",       data: hums,  borderColor: "#0d6efd", backgroundColor: "transparent", tension: 0.3 },
-        { label: "Pressió (hPa)",     data: press, borderColor: "#198754", backgroundColor: "transparent", tension: 0.3 },
-      ],
-    },
-    options: { responsive: true },
-  });
+  // Gràfica 1: Temperatura + Humitat (escales similars, 0–100)
+  chartMeteo = new Chart(
+    document.getElementById("chart-meteo").getContext("2d"),
+    {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Temperatura (°C)",
+            data: temps,
+            borderColor: "#dc3545",
+            backgroundColor: "transparent",
+            tension: 0.3,
+          },
+          {
+            label: "Humitat (%)",
+            data: hums,
+            borderColor: "#0d6efd",
+            backgroundColor: "transparent",
+            tension: 0.3,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } },
+      },
+    }
+  );
+
+  // Gràfica 2: Pressió (escala ~950–1050 hPa, molt comprimida si compartida)
+  chartPressure = new Chart(
+    document.getElementById("chart-pressure").getContext("2d"),
+    {
+      type: "line",
+      data: {
+        labels,
+        datasets: [
+          {
+            label: "Pressió (hPa)",
+            data: press,
+            borderColor: "#198754",
+            backgroundColor: "rgba(25,135,84,0.08)",
+            tension: 0.3,
+            fill: true,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } },
+        scales: {
+          y: {
+            // Zoom automàtic al rang real de les dades ±5 hPa
+            suggestedMin: Math.min(...press) - 5,
+            suggestedMax: Math.max(...press) + 5,
+          },
+        },
+      },
+    }
+  );
 
   actualitzarTaula(sensor);
 }
