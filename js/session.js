@@ -57,15 +57,18 @@ function actualitzarCTA(user) {
 
 // Mostra/oculta l'enllaç al dashboard del nav
 function actualitzarNavDashboard(user) {
-    const dashboardLink = document.getElementById("dashboard-link");
-    if (!dashboardLink) return;
+  const dashboardLink    = document.getElementById("dashboard-link");
+  const manageUsersLink  = document.getElementById("manage-users-link");
 
-    if (user.rol === "Admin") {
-        // L'admin no necessita el dashboard de sensors
-        dashboardLink.classList.add("d-none");
-    } else {
-        dashboardLink.classList.remove("d-none");
-    }
+  if (user.rol === "Admin") {
+    // L'admin veu gestió d'usuaris, no el dashboard de sensors
+    if (dashboardLink)   dashboardLink.classList.add("d-none");
+    if (manageUsersLink) manageUsersLink.classList.remove("d-none");
+  } else {
+    // El pagès veu el dashboard, no la gestió d'usuaris
+    if (dashboardLink)   dashboardLink.classList.remove("d-none");
+    if (manageUsersLink) manageUsersLink.classList.add("d-none");
+  }
 }
 
 // ─────────────────────────────────────────────
