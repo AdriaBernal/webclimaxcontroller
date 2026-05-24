@@ -1,10 +1,3 @@
-// ─────────────────────────────────────────────
-// login.js — Gestió del formulari de login
-//
-// Ara connecta amb el backend real en lloc de les
-// dades de prova hardcodejades.
-// ─────────────────────────────────────────────
-
 const API_BASE = "http://localhost:8000";
 
 function mostrarError(missatge) {
@@ -34,7 +27,6 @@ async function ferLogin(e) {
   btn.textContent = "Carregant...";
 
   try {
-    // Petició POST al backend amb les credencials en format JSON
     const response = await fetch(`${API_BASE}/api/auth/login`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
@@ -42,16 +34,12 @@ async function ferLogin(e) {
     });
 
     if (!response.ok) {
-      // El servidor ha retornat un error (401 credencials incorrectes, etc.)
       const errorData = await response.json().catch(() => ({}));
       mostrarError(errorData.detail || "Usuari o contrasenya incorrectes.");
       return;
     }
 
     const data = await response.json();
-    // data té: { access_token, token_type, id, nom, cognom, rol }
-
-    // Guardem el token i les dades de l'usuari al localStorage
     localStorage.setItem("token", data.access_token);
     localStorage.setItem("user", JSON.stringify({
       id:     data.id,
@@ -60,7 +48,6 @@ async function ferLogin(e) {
       rol:    data.rol,
     }));
 
-    // Redirigim segons el rol
     if (data.rol === "Admin") {
       window.location.href = "manageusers.html";
     } else {
@@ -68,7 +55,6 @@ async function ferLogin(e) {
     }
 
   } catch (error) {
-    // Error de xarxa: el servidor no respon
     mostrarError("No s'ha pogut connectar amb el servidor. Comprova que el backend estigui funcionant.");
     console.error(error);
   } finally {
@@ -78,7 +64,6 @@ async function ferLogin(e) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  // Si l'usuari ja té sessió, el portem al dashboard directament
   const token = localStorage.getItem("token");
   if (token) {
     window.location.href = "dashboard.html";

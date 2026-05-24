@@ -26,14 +26,8 @@ ALGORITHM            = "HS256"
 TOKEN_EXPIRE_MINUTES = 60   # el token caduca al cap d'1 hora
 
 # ── Configuració bcrypt ───────────────────────────────────
-# CryptContext gestiona l'algoritme de hashing.
-# "deprecated='auto'" fa que actualitzi hashes antics automàticament.
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-# HTTPBearer indica a FastAPI (i a Swagger) que els endpoints protegits
-# esperen un token Bearer a la capçalera Authorization.
-# A diferència d'OAuth2PasswordBearer, mostra un camp de text simple
-# al Swagger en lloc d'un formulari d'usuari/contrasenya.
 http_bearer = HTTPBearer()
 
 
@@ -81,8 +75,6 @@ def _decode_token(token: str) -> dict | None:
 
 
 # ── Dependencies de FastAPI ───────────────────────────────
-# Les "dependencies" són funcions que FastAPI executa automàticament
-# abans d'arribar al codi del teu endpoint.
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(http_bearer),
@@ -100,8 +92,6 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    # credentials.credentials és el token en text pla extret de la capçalera
-    # Authorization: Bearer <token>
     payload = _decode_token(credentials.credentials)
     if payload is None:
         raise credentials_exception

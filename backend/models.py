@@ -14,10 +14,9 @@ class Usuari(Base):
     Nom      = Column(String(50), nullable=True)
     Cognom   = Column(String(50), nullable=True)
     Usuari   = Column(String(50), unique=True, nullable=False)
-    Password = Column(String(255), nullable=False)   # hash bcrypt
-    Rol      = Column(String(50), nullable=False)    # "Admin" o "Pagès"
+    Password = Column(String(255), nullable=False)
+    Rol      = Column(String(50), nullable=False)
 
-    # Relació amb Sensor: si eliminem un usuari, s'eliminen els seus sensors
     sensors = relationship("Sensor", back_populates="owner", cascade="all, delete-orphan")
 
 

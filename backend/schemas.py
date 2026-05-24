@@ -63,7 +63,7 @@ class UsuariUpdate(BaseModel):
     nom: Optional[str] = None
     cognom: Optional[str] = None
     usuari: Optional[str] = None
-    password: Optional[str] = None   # si és None, no canviem la password
+    password: Optional[str] = None
     rol: Optional[str] = None
 
     @field_validator("rol")

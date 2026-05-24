@@ -1,26 +1,9 @@
-// ─────────────────────────────────────────────
-// dashboard.js — Lògica principal del dashboard
-//
-// Connectat al backend real:
-//   - GET  /api/sensors              → carrega els sensors de l'usuari
-//   - POST /api/sensors              → crea un sensor nou
-//   - PUT  /api/sensors/{id}         → reanomena un sensor
-//   - DELETE /api/sensors/{id}       → elimina un sensor
-//   - GET  /api/sensors/{id}/readings → carrega les lectures d'un sensor
-//   - POST /api/sensors/{id}/readings → guarda una lectura nova
-// ─────────────────────────────────────────────
-
 const API_BASE = "http://localhost:8000";
 
 let chartMeteo;
 let chartPressure;
 let map;
-// Mapa en memòria: sensor_id → { apiData, marker, readings[] }
 let sensorsMap = {};
-
-// ─────────────────────────────────────────────
-// HELPERS D'AUTENTICACIÓ
-// ─────────────────────────────────────────────
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -37,7 +20,6 @@ async function apiFetch(path, options = {}) {
   });
 
   if (response.status === 401) {
-    // Token expirat o invàlid → tornem al login
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     window.location.href = "login.html";
@@ -46,10 +28,6 @@ async function apiFetch(path, options = {}) {
 
   return response;
 }
-
-// ─────────────────────────────────────────────
-// SESSIÓ
-// ─────────────────────────────────────────────
 
 function verificarSessio() {
   const token = localStorage.getItem("token");
@@ -60,10 +38,6 @@ function verificarSessio() {
   }
   return user;
 }
-
-// ─────────────────────────────────────────────
-// TOASTS (notificacions no bloquejants)
-// ─────────────────────────────────────────────
 
 function mostrarToast(missatge, tipus = "success") {
   const container = document.getElementById("toast-container");
@@ -82,10 +56,6 @@ function mostrarToast(missatge, tipus = "success") {
   toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
 }
 
-// ─────────────────────────────────────────────
-// DETECCIÓ D'AIGUA (Nominatim)
-// ─────────────────────────────────────────────
-
 async function esAigua(lat, lng) {
   try {
     const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`;
@@ -100,10 +70,6 @@ async function esAigua(lat, lng) {
   }
 }
 
-// ─────────────────────────────────────────────
-// CARREGAR SENSORS DES DE L'API
-// ─────────────────────────────────────────────
-
 async function carregarSensors() {
   const res = await apiFetch("/api/sensors");
   if (!res || !res.ok) {
@@ -112,23 +78,18 @@ async function carregarSensors() {
   }
   const sensors = await res.json();
 
-  // Per cada sensor de l'API, creem el marcador al mapa
   sensors.forEach((s) => {
     const sensorLocal = {
       id:       s.id,
       name:     s.nom,
       lat:      s.lat,
       lng:      s.lng,
-      readings: [],   // les carreguem quan l'usuari fa clic al sensor
+      readings: [],
     };
     sensorsMap[s.id] = sensorLocal;
     crearMarkerSensor(sensorLocal);
   });
 }
-
-// ─────────────────────────────────────────────
-// POPUP DEL SENSOR
-// ─────────────────────────────────────────────
 
 function renderSensorPopup(sensor) {
   return `
@@ -146,7 +107,6 @@ function crearMarkerSensor(sensor) {
   marker.sensorData = sensor;
   marker.bindPopup(renderSensorPopup(sensor));
 
-  // En fer clic al marcador, carreguem les lectures si no les tenim ja
   marker.on("click", async function () {
     if (this.sensorData.readings.length === 0) {
       await carregarLectures(this.sensorData);
@@ -159,7 +119,6 @@ function crearMarkerSensor(sensor) {
     const thisSensor  = this.sensorData;
     const thisMarker  = this;
 
-    // ── Recollir lectures (Open-Meteo → BD) ──
     const collectBtn = popupEl.querySelector(".collect-btn");
     collectBtn.onclick = async () => {
       collectBtn.innerText  = "Carregant...";
@@ -176,7 +135,6 @@ function crearMarkerSensor(sensor) {
       }
     };
 
-    // ── Actualitzar nom ──
     const renameBtn = popupEl.querySelector(".rename-btn");
     renameBtn.onclick = async () => {
       const nouNom = prompt("Nou nom pel sensor:", thisSensor.name);
@@ -196,7 +154,6 @@ function crearMarkerSensor(sensor) {
       }
     };
 
-    // ── Eliminar sensor ──
     const deleteBtn = popupEl.querySelector(".delete-btn");
     deleteBtn.onclick = async () => {
       if (!confirm(`Segur que vols eliminar "${thisSensor.name}"?`)) return;
@@ -211,7 +168,6 @@ function crearMarkerSensor(sensor) {
         map.closePopup();
         mostrarToast(`Sensor "${thisSensor.name}" eliminat`);
 
-        // Netejem gràfiques i taula
         if (chartMeteo)    { chartMeteo.destroy();    chartMeteo    = null; }
         if (chartPressure) { chartPressure.destroy();  chartPressure = null; }
         document.querySelector("#sensor-table tbody").innerHTML = "";
@@ -226,16 +182,11 @@ function crearMarkerSensor(sensor) {
   return marker;
 }
 
-// ─────────────────────────────────────────────
-// CARREGAR LECTURES D'UN SENSOR DES DE L'API
-// ─────────────────────────────────────────────
-
 async function carregarLectures(sensor) {
   const res = await apiFetch(`/api/sensors/${sensor.id}/readings`);
   if (!res || !res.ok) return;
 
   const lectures = await res.json();
-  // Convertim el format de l'API al format intern del JS
   sensor.readings = lectures.map((l) => ({
     time:  new Date(l.data_hora).toLocaleTimeString("ca", { hour: "2-digit", minute: "2-digit" }),
     temps: l.temperatura,
@@ -244,19 +195,13 @@ async function carregarLectures(sensor) {
   }));
 }
 
-// ─────────────────────────────────────────────
-// RECOLLIR DADES DE OPEN-METEO I GUARDAR A LA BD
-// ─────────────────────────────────────────────
-
 async function recollirIGuardarLectura(sensor) {
-  // Pas 1: cridem Open-Meteo amb les coordenades del sensor
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${sensor.lat}&longitude=${sensor.lng}&current=temperature_2m,relative_humidity_2m,surface_pressure`;
   const meteoRes = await fetch(url);
   if (!meteoRes.ok) throw new Error(`Open-Meteo HTTP ${meteoRes.status}`);
   const meteoData = await meteoRes.json();
   const current   = meteoData.current;
 
-  // Pas 2: enviem la lectura al backend per guardar-la a la BD
   const saveRes = await apiFetch(`/api/sensors/${sensor.id}/readings`, {
     method: "POST",
     body:   JSON.stringify({
@@ -270,7 +215,6 @@ async function recollirIGuardarLectura(sensor) {
     throw new Error("Error en guardar la lectura al backend");
   }
 
-  // Pas 3: afegim la lectura a la memòria local i actualitzem la UI
   sensor.readings.push({
     time:  new Date().toLocaleTimeString("ca", { hour: "2-digit", minute: "2-digit" }),
     temps: current.temperature_2m,
@@ -280,10 +224,6 @@ async function recollirIGuardarLectura(sensor) {
 
   actualitzarGrafica(sensor);
 }
-
-// ─────────────────────────────────────────────
-// GRÀFICA I TAULA
-// ─────────────────────────────────────────────
 
 function actualitzarGrafica(sensor) {
   if (sensor.readings.length === 0) {
@@ -355,22 +295,15 @@ function actualitzarTaula(sensor) {
   });
 }
 
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
-
 document.addEventListener("DOMContentLoaded", async function () {
   const user = verificarSessio();
   if (!user) return;
 
-  // Inicialitzar mapa
   map = L.map("map").setView([41.4333, 1.7935], 13);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(map);
 
-  // Carregar sensors reals des de l'API
   await carregarSensors();
 
-  // Clic al mapa → crear sensor nou
   map.on("click", async function (e) {
     const { lat, lng } = e.latlng;
 
@@ -392,7 +325,6 @@ document.addEventListener("DOMContentLoaded", async function () {
       return;
     }
 
-    // Comptem quants sensors té l'usuari per mostrar advertència si s'acosta al límit
     const numSensors = Object.keys(sensorsMap).length;
     if (numSensors >= 5) {
       mostrarToast("Has arribat al límit de 5 sensors", "error");

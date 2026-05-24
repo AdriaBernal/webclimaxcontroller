@@ -21,7 +21,6 @@ def main():
         users = db.query(models.Usuari).all()
         updated = 0
         for user in users:
-            # Detectem si la password JA és un hash bcrypt (comencen per $2b$)
             if not user.Password.startswith("$2b$"):
                 plain = user.Password
                 user.Password = hash_password(plain)

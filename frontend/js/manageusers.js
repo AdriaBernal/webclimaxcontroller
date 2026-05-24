@@ -1,22 +1,8 @@
-// ─────────────────────────────────────────────
-// manageusers.js — Gestió d'usuaris (Admin)
-//
-// Connectat al backend real:
-//   GET    /api/users        → llistar usuaris
-//   POST   /api/users        → crear usuari
-//   PUT    /api/users/{id}   → actualitzar usuari
-//   DELETE /api/users/{id}   → eliminar usuari
-// ─────────────────────────────────────────────
-
 const API_BASE = "http://localhost:8000";
 
 let users          = [];
 let selectedUserId = null;
 let deleteModal;
-
-// ─────────────────────────────────────────────
-// HELPERS D'AUTENTICACIÓ
-// ─────────────────────────────────────────────
 
 function getAuthHeaders() {
   const token = localStorage.getItem("token");
@@ -47,10 +33,6 @@ async function apiFetch(path, options = {}) {
   return response;
 }
 
-// ─────────────────────────────────────────────
-// TOASTS
-// ─────────────────────────────────────────────
-
 function mostrarToast(missatge, tipus = "success") {
   const container = document.getElementById("toast-container");
   const bgClass   = tipus === "error" ? "text-bg-danger" : "text-bg-success";
@@ -67,10 +49,6 @@ function mostrarToast(missatge, tipus = "success") {
   toast.show();
   toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
 }
-
-// ─────────────────────────────────────────────
-// CARREGAR USUARIS DES DE L'API
-// ─────────────────────────────────────────────
 
 async function carregarUsuaris() {
   const res = await apiFetch("/api/users");
@@ -92,10 +70,6 @@ function omplirSelect() {
     select.appendChild(option);
   });
 }
-
-// ─────────────────────────────────────────────
-// AUTOCOMPLETAR FORMULARI D'EDICIÓ
-// ─────────────────────────────────────────────
 
 function onSelectCanvi(e) {
   const id           = parseInt(e.target.value);
@@ -122,10 +96,6 @@ function onSelectCanvi(e) {
   noSelMsg.classList.add("d-none");
 }
 
-// ─────────────────────────────────────────────
-// CREAR USUARI
-// ─────────────────────────────────────────────
-
 async function crearUsuari() {
   const nom      = document.getElementById("create-nom").value.trim();
   const cognom   = document.getElementById("create-cognom").value.trim();
@@ -151,7 +121,6 @@ async function crearUsuari() {
     return;
   }
 
-  // Netejem el formulari
   document.getElementById("create-nom").value     = "";
   document.getElementById("create-cognom").value  = "";
   document.getElementById("create-usuari").value  = "";
@@ -159,12 +128,8 @@ async function crearUsuari() {
   document.getElementById("create-rol").value     = "Pagès";
 
   mostrarToast(`Usuari "${usuari}" creat correctament`);
-  await carregarUsuaris();   // Recarreguem la llista
+  await carregarUsuaris();
 }
-
-// ─────────────────────────────────────────────
-// ACTUALITZAR USUARI
-// ─────────────────────────────────────────────
 
 async function actualitzarUsuari() {
   if (!selectedUserId) return;
@@ -172,7 +137,7 @@ async function actualitzarUsuari() {
   const nom      = document.getElementById("edit-nom").value.trim();
   const cognom   = document.getElementById("edit-cognom").value.trim();
   const usuari   = document.getElementById("edit-usuari").value.trim();
-  const password = document.getElementById("edit-password").value;  // pot estar buit
+  const password = document.getElementById("edit-password").value;
   const rol      = document.getElementById("edit-rol").value;
 
   if (!nom || !cognom || !usuari) {
@@ -180,7 +145,6 @@ async function actualitzarUsuari() {
     return;
   }
 
-  // Si la password està buida, no l'enviem (el backend no la canviarà)
   const body = { nom, cognom, usuari, rol };
   if (password) body.password = password;
 
@@ -201,10 +165,6 @@ async function actualitzarUsuari() {
   await carregarUsuaris();
   document.getElementById("select-usuari").value = selectedUserId;
 }
-
-// ─────────────────────────────────────────────
-// ELIMINAR USUARI
-// ─────────────────────────────────────────────
 
 function obrirModalEliminar() {
   if (!selectedUserId) return;
@@ -240,10 +200,6 @@ async function confirmarEliminacio() {
   mostrarToast(`Usuari "${user.usuari}" eliminat`);
   await carregarUsuaris();
 }
-
-// ─────────────────────────────────────────────
-// INIT
-// ─────────────────────────────────────────────
 
 document.addEventListener("DOMContentLoaded", async function () {
   // Protegim la pàgina: només admins

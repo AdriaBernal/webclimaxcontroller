@@ -45,24 +45,15 @@ app = FastAPI(
 )
 
 # ── CORS (Cross-Origin Resource Sharing) ─────────────────
-# El navegador, per seguretat, bloqueja les peticions entre dominis/ports
-# diferents. Com que el frontend (ex: port 5500) i el backend (port 8000)
-# estan en ports distints, necessitem dir-li al backend quins orígens
-# estan permesos.
-#
-# En desenvolupament permetem tots els orígens ("*").
-# En producció caldria restringir-ho al domini real del frontend.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],        # En producció: ["https://el-teu-domini.com"]
+    allow_origins=["*"],
     allow_credentials=True,
-    allow_methods=["*"],        # GET, POST, PUT, DELETE...
-    allow_headers=["*"],        # Authorization, Content-Type...
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ── Registrar routers ────────────────────────────────────
-# Cada router és com un "mòdul" que gestiona un grup d'endpoints.
-# En registrar-los aquí els unim tots a l'aplicació principal.
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(sensors.router)
